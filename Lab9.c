@@ -15,7 +15,7 @@ int main(int argc, char *argv[]){
 		struct sockaddr otherAddr;
 		int backLog;
 		socklen_t size;
-		memset(&hints,0,sizeof(hints)); // MAKE SURE TO SET ALL THE HINTS
+		memset(&hints,0,sizeof(hints)); // MAKE SURE TO SET ALL THE HINTS OR ELSE GETADDRINFO WONT WORK!
 		hints.ai_family = AF_INET; // IPv4
 		hints.ai_socktype = SOCK_STREAM; //TCP
 		hints.ai_flags = AI_PASSIVE; // CREATE A LISTENING SERVER
