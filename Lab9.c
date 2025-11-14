@@ -15,18 +15,18 @@ int main(int argc, char *argv[]){
 		struct sockaddr otherAddr;
 		int backLog;
 		socklen_t size;
-		memset(&hints,0,sizeof(hints));
-		hints.ai_family = AF_INET;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_flags = AI_PASSIVE;
-		int ret = getaddrinfo(NULL,PORT,&hints,&first);
+		memset(&hints,0,sizeof(hints)); // MAKE SURE TO SET ALL THE HINTS
+		hints.ai_family = AF_INET; // IPv4
+		hints.ai_socktype = SOCK_STREAM; //TCP
+		hints.ai_flags = AI_PASSIVE; // CREATE A LISTENING SERVER
+		int ret = getaddrinfo(NULL,PORT,&hints,&first); // SCANS THE NETWORK FOR EVERY POTENTIAL SOCKET CANDIDATE. PUTS RESULTS IN "struct addrinfo *first"
 		//printf("Finding socket\n");
 		//printf("getaddrinfo: %s\n",gai_strerror(ret));
-		for(current = first; current != NULL; current = current->ai_next){
-			if((mainSocket = socket(first->ai_family,first->ai_socktype,first->ai_protocol))==-1){
+		for(current = first; current != NULL; current = current->ai_next){ // ITERATE THROUGH EVERY CANDIDATE
+			if((mainSocket = socket(first->ai_family,first->ai_socktype,first->ai_protocol))==-1){ // RESET IF THE SOCKET FAILS
 				continue;
 			}
-			if(bind(mainSocket, current->ai_addr, current->ai_addrlen)==-1){
+			if(bind(mainSocket, current->ai_addr, current->ai_addrlen)==-1){ // RESET IF THE SOCKET FAILS TO BIND
 		        close(mainSocket);
 		        mainSocket = -1;
 				continue;
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]){
 			//otherAddr = current->ai_addr;
 			break;
 		}
-		freeaddrinfo(first);
+		freeaddrinfo(first); // FREE THE ADDRESS INFO
 		printf("Listening...\n");
 		if(listen(mainSocket,backLog)==-1){
 		        close(mainSocket);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
 	        }
 			if(listening==1){
 			    printf("Reading from client...\n");
-			    if((readbytes = recv(newSocket,readBuffer,1000,0))>0){
+			    if((readbytes = recv(newSocket,readBuffer,1000,0))>0){ // READ FROM THE SOCKET FILE DESCRIPTOR
 			        printf("ping: %s",readBuffer);
 			        sprintf(readBuffer," ");
 			        listening = 0;
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]){
 			}else{
 			    printf("Write to client: ");
 			    fgets(inputBuffer,1000,stdin);
-			    send(newSocket,inputBuffer,1000,0);
+			    send(newSocket,inputBuffer,1000,0); // WRITE TO THE SOCKET FILE DESCRIPTOR
 			    sprintf(inputBuffer," ");
 			    listening = 1;
 	        }
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]){
         hints.ai_socktype = SOCK_STREAM;
         int ret = getaddrinfo(serverIP,port,&hints,&first);
         printf("Connecting to IP: %s, PORT: %s\n",serverIP,port);
-        for(current = first; current!=NULL; current = current->ai_next){ // What specifically does this linked list iterate through?
+        for(current = first; current!=NULL; current = current->ai_next){ 
             if((mainSocket=socket(first->ai_family,first->ai_socktype,first->ai_protocol))<0){
             	continue;
             }
